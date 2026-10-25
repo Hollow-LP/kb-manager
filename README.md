@@ -6,8 +6,7 @@
 
 开发计划见 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)，进度见 [docs/PROGRESS.md](docs/PROGRESS.md)，
 接口说明见 [docs/API.md](docs/API.md)，业务演示见 [docs/DEMO.md](docs/DEMO.md)，验收记录见 [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md)，
-模型微调流程见 [docs/FINETUNE.md](docs/FINETUNE.md)，项目总结（面试准备版）见 [docs/INTERVIEW.md](docs/INTERVIEW.md)。
-
+模型微调流程见 [docs/FINETUNE.md](docs/FINETUNE.md)
 ## 架构
 
 | 部分 | 技术栈 | 本机端口 |
