@@ -1,0 +1,3 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+ALTER DATABASE kb_manager SET timezone TO 'Asia/Shanghai';

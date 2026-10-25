@@ -1,0 +1,55 @@
+# kb-manager 依赖服务（PostgreSQL + pgvector、Redis）
+# 运行目录：/opt/kb-manager/deploy
+# 说明：VM 上还有 etl-agent / milvus 等其他项目，容器名、网络、数据卷均带 kb- 前缀以避免冲突。
+#   - kb 后端在宿主机运行时：DATABASE_URL / REDIS_URL 用 127.0.0.1:5432 / 6379
+#   - kb 后端也放进容器时：用 kb-net 内的服务名 kb-postgres:5432 / kb-redis:6379
+name: kb-manager
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: kb-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kb
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kb}
+      POSTGRES_DB: kb_manager
+      TZ: Asia/Shanghai
+    ports:
+      - "5432:5432"
+    volumes:
+      - kb-pgdata:/var/lib/postgresql/data
+      - ../backend/scripts/init_db.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kb -d kb_manager"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - kb-net
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: kb-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - kb-redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - kb-net
+
+volumes:
+  kb-pgdata:
+  kb-redisdata:
+
+networks:
+  kb-net:
+    name: kb-net
+    driver: bridge
